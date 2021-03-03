@@ -1,0 +1,936 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<conio.h>
+#include<windows.h>
+#define AdministratorAcccount "123456"
+#define AdministratorPassword "123456"
+typedef struct bookinfo								//图书数据结构体 
+{
+	char BookName[100];
+	char Writer[100];
+	char BookNumber[100];
+	int number;
+}BOOKINFO;
+typedef struct user									//用户账号密码结构体 
+{
+	char account[20];
+	char password[20];
+}USER;
+
+int print(BOOKINFO bookinfo[],int i); 				//测试用的函数 
+void administrator();								//管理员登录的函数 
+int UserEnter(USER user[],int no);					//用户登录函数 
+int UseInfo(USER user[],int no);					//获取用户账号密码文本的函数 
+void UserLogin();									//注册用户账号密码文本的函数 
+void UserMain();									//用户界面函数 
+void borrow(BOOKINFO bookinfo[],int i);				//借阅图书的函数 
+void writeinfo(BOOKINFO bookinfo[],int no);			//将修改后的图书信息存到文件中
+int getinfo(BOOKINFO bookinfo[],int no);			//获取文件中的图书信息 
+void Return();										//归还图书的函数 
+void UserBorrow(BOOKINFO bookinfo);					//用户借阅图书后存在文件中的函数 
+void AdministratorMain(); 							//管理员界面函数 
+void create();										//添加图书的函数 
+void search();										//查找图书
+void modify();										//修改图书
+void Delete();										//删除图书 
+void AboutUs();										//介绍团队的函数 
+void PrintBorrow();									//打印已借阅的图书信息 
+int BorrowInfo(BOOKINFO borrow[],int i);			//获取借阅书籍文件信息的函数
+void writeBorrow(BOOKINFO bookinfo[],int no);		//将更新后的书籍信息打印到文件中 
+int getborrow(BOOKINFO bookinfo[100],int no);
+ 
+ 
+
+void mainshow()											//主界面 
+{
+	int i;
+	printf("\n\n\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("************图书馆管理系统************\n");
+	for(i=1;i<=40;i++) printf(" "); 
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|    请输入编号进入对应的功能界面    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|1、用户登录            2、管理员登录|\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|3、注册用户            4、关于我们  |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("**************************************\n"); 
+}
+
+void show5()											//用户界面 
+{
+	int i;
+	printf("\n\n\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("****************用户界面**************\n");
+	for(i=1;i<=40;i++) printf(" "); 
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|    请输入编号进入对应的功能界面    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|1、查看图书馆内图书  2、借阅图书    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|3、归还图书          4、我借阅的图书|\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|0、返回主菜单                       |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("**************************************\n"); 
+}
+void show4()										//管理员修改书籍界面 
+{
+	int i;
+	for(i=1;i<=40;i++) printf(" ");
+	printf("**************************************\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|       请选择想要进行修改的方式：   |\n");
+	for(i=1;i<=40;i++) printf(" "); 
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|    请输入编号进入对应的功能界面    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|1、修改书籍名称          2、修改作者|\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|3、修改书籍编号                     |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("**************************************\n");
+}
+void show1()										//管理员界面 
+{
+	int i;
+	printf("\n\n\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("**************管理员界面**************\n");
+	for(i=1;i<=40;i++) printf(" "); 
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|    请输入编号进入对应的功能界面    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|1、查看现有图书      2、书籍的入库  |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|3、查找图书          4、修改图书信息|\n");
+	for(i=1;i<=40;i++) printf(" "); 
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|5、删除图书           0、返回主菜单 |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("**************************************\n"); 
+}
+void AboutUs()
+{
+	int i;
+	system("cls"); 
+	printf("\n\n\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("***************关于我们***************\n");
+	for(i=1;i<=40;i++) printf(" "); 
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|    福建技术师范学院图书管理系统    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|班级：计算机科学与技术1班           |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("|制作团队：郑锦涛、林昊哲、范宇培    |\n");
+	for(i=1;i<=40;i++) printf(" "); 
+	printf("|                                    |\n");
+	for(i=1;i<=40;i++) printf(" ");
+	printf("**************************************\n"); 
+	getch();
+}
+
+int getinfo(BOOKINFO bookinfo[10],int no)
+{
+	FILE * f;
+	char ch;
+	no=0;
+	if((f=fopen("1.txt","r"))==NULL)		
+	{
+		printf("文件不能打开!\n");
+		exit(0);
+	}
+	ch=fgetc(f);
+	rewind(f);
+	if(ch==EOF)
+	{
+		no=0;
+	}else 
+	{
+		while(!feof(f))
+		{
+			fscanf(f,"%s %s %s %d\n",bookinfo[no].BookName,bookinfo[no].Writer,
+			bookinfo[no].BookNumber,&bookinfo[no].number);
+			no++;
+		}
+	}
+	fclose(f);
+	return no; 									//返回书籍种类数量 
+	
+}
+void writeinfo(BOOKINFO bookinfo[10],int no)
+{
+	FILE * f;
+	int n=0; 
+	if((f=fopen("1.txt","w"))==NULL)
+	{
+		printf("不能打开文件夹\n");
+		exit(0); 
+	}else
+	{
+		while(no)
+		{
+			fprintf(f,"%s %s %s %d\n",bookinfo[n].BookName,bookinfo[n].Writer,
+			bookinfo[n].BookNumber,bookinfo[n].number);
+			n++;
+			no--;
+		}
+	}
+	fclose(f);
+}
+void writeBorrow(BOOKINFO bookinfo[],int no)
+{
+	FILE * f;
+	int n=0; 
+	if((f=fopen("UserBorrow.txt","w"))==NULL)
+	{
+		printf("不能打开文件夹\n");
+		exit(0); 
+	}else
+	{
+		while(no)
+		{
+			fprintf(f,"%s %s %s %d\n",bookinfo[n].BookName,bookinfo[n].Writer,
+			bookinfo[n].BookNumber,bookinfo[n].number);
+			n++;
+			no--;
+		}
+	}
+	fclose(f);
+}
+
+int UseInfo(USER user[100],int no)
+{
+	FILE * f;
+	no=0;
+	if((f=fopen("USER.txt","r"))==NULL)
+	{
+		printf("文件不能打开!\n");
+		exit(0);
+	}
+	while(!feof(f))
+	{
+		fscanf(f,"%s %s\n",user[no].account,user[no].password);
+		no++;
+	}
+	fclose(f);
+	return no;
+}
+int main()
+{
+	char choice;										//代表用户选择的功能序号 
+	int i;
+	void UserMain();
+	system("color 3"); 
+	system("color 3F");
+	BOOKINFO bookinfo[10];	
+	USER user[10];
+	BOOKINFO * b;
+	b=bookinfo;
+	printf("\n%c\n",choice);
+	while(1)
+	{
+		system("cls");									//清屏 
+		mainshow();										//调用主界面函数 
+		printf("输入序号进入对应功能\n"); 
+		choice=getch();
+		switch(choice)
+		{
+			case '1':UserEnter(user,i);break;			//用户入口 
+			case '2':administrator();break;				//管理员入口 
+			case '3':UserLogin(i);break;				//用户注册
+			case '4':AboutUs();break;					//关于我们 
+		} 
+	}
+	return 0;
+}
+int print(BOOKINFO bookinfo[10],int i)
+{
+	int no=0,j;
+	i=getinfo(bookinfo,i);								//代表有几本书
+	system("cls");
+	printf("\n\n\n\n");
+	for(j=1;j<=40;j++) printf(" "); 
+	printf("* 全部馆藏图书 *\n");
+	printf("\n\n");
+	while(i)
+	{
+		printf("图书名：%-15s 作者：%-10s 图书编号：%-5s 数量：%d\n\n",bookinfo[no].BookName,bookinfo[no].Writer,
+		bookinfo[no].BookNumber,bookinfo[no].number);
+		i--; 
+		no++;
+	}
+	for(j=1;j<=40;j++) printf(" ");
+	printf("\n\n"); 
+	printf("以上为图书馆内全部图书信息，任意键返回\n");
+	getch();	
+}
+int UserEnter(USER user[10],int i)
+{
+	int no=0;											//遍历账号密码用的
+	int t;												//用来跳转到下一个函数用的 
+	char account[20];
+	char password[20];
+	system("cls");
+	printf("\n\n\n");
+	for(i=1;i<=40;i++) printf(" "); 
+	printf("* 图书馆管理系统用户登录界面 *\n");
+	printf("\n\n");
+	for(i=1;i<=40;i++) printf(" "); 
+	printf("请输入账号（账号长度在6~20位之间）\n");
+	for(i=1;i<=40;i++) printf(" "); 
+	printf("账号：");
+	gets(account);
+	printf("\n\n");
+	for(i=1;i<=40;i++) printf(" "); 
+	printf("请输入密码（密码长度在6~20位之间）\n");
+	for(i=1;i<=40;i++) printf(" "); 
+	printf("密码："); 
+	gets(password);
+	i=UseInfo(user,i);
+	while(i)
+	{
+		if(strcmp(account,user[no].account)==0 && strcmp(password,user[no].password)==0)
+		{
+			t=1;
+		}
+		no++;
+		i--;
+	}
+	if(t!=1)
+	{
+		printf("输入的账号或密码错误\n");
+	}else if(t==1)										//如果账号密码都正确，那么调用用户界面函数，并开始执行用户功能函数
+	{
+		printf("登陆成功请稍后\n");
+		Sleep(1000); 
+		UserMain();
+	} 
+	printf("按任意键继续\n");
+	getch();
+}
+
+void administrator()
+{
+	char account[20],password[20];
+	int t,i,j;
+	for(i=1;i<=3;i++)
+	{
+		system("cls");
+		printf("\n\n\n\n");
+		for(j=1;j<=40;j++) printf(" "); 
+		printf("* 图书馆管理系统管理员登录界面 *\n");
+		printf("\n\n");
+		for(j=1;j<=40;j++) printf(" ");
+		printf("请输入管理员账户 账号：123456 密码：123456\n");
+		printf("\n\n");
+		for(j=1;j<=40;j++) printf(" "); 
+		printf("账户："); 
+		gets(account);
+		printf("\n\n");
+		for(j=1;j<=40;j++) printf(" "); 
+		printf("请输入管理员密码\n");
+		for(j=1;j<=40;j++) printf(" "); 
+		printf("密码：");
+		gets(password);
+		if(strcmp(password,AdministratorPassword)==0 && strcmp(account,AdministratorAcccount)==0)
+		{
+			printf("登录成功请稍后...\n"); 
+			Sleep(1000);
+			t=1;
+			break;
+		}else
+		{
+			if(3-i==0)
+			{
+				printf("登陆次数用完\n");
+				t=2;
+			}else
+			{
+				printf("输入错误，您还有%d次机会,请稍后...\n",3-i);
+				Sleep(1000);
+			}
+		}
+	} 
+	if(t==1)											//如果账号密码都正确，那么调用管理员界面函数，并开始执行管理员功能函数
+	{
+		AdministratorMain();
+	}else if(t==2)
+	{
+		printf("按任意键重新选择功能序号") ;
+		//返回一级菜单 
+	}
+	getch();
+}
+void UserLogin()
+{
+	FILE * f;
+	char account[20],password[20];
+	int p=1,i;									//代表判断账号密码是否符合规定 
+	while(p)
+	{
+		system("cls");
+		printf("\n\n\n\n");
+		for(i=1;i<=40;i++) printf(" "); 
+		printf("* 图书馆管理系统管理员登录界面 *\n");
+		printf("\n\n");
+		for(i=1;i<=40;i++) printf(" ");
+		printf("请输入注册的账户,长度在6-20位之间\n");
+		for(i=1;i<=40;i++) printf(" "); 
+		gets(account);
+		printf("\n\n");
+		for(i=1;i<=40;i++) printf(" ");
+		printf("请输入注册的密码,长度在6-20位之间\n");
+		for(i=1;i<=40;i++) printf(" "); 
+		gets(password);
+		if(strlen(account)<6 || strlen(account)>20 || strlen(password)<6 || strlen(password)>20)
+		{
+			p=1;
+			printf("账号密码不符合6~20位的要求\n");
+		}else p=0;
+	}
+	printf("注册成功任意键返回登陆界面\n");
+	if((f=fopen("USER.txt","a"))==NULL)
+	{
+		printf("文件不能打开!\n");
+		exit(0);
+	}
+	fprintf(f,"%s %s\n",account,password);
+	fclose(f);
+	getch();
+}
+void UserMain()
+{
+	char choice;
+	BOOKINFO bookinfo[10];
+	int i;
+	int tag=1;
+	i=getinfo(bookinfo,i);
+	while(tag)
+	{
+		system("cls");
+		show5();
+		printf("请输入功能序号："); 
+		choice=getch();
+		printf("%c\n",choice);
+		switch(choice)
+		{
+			case '0':tag=0;break;
+			case '1':i=print(bookinfo,i);break;
+			case '2':borrow(bookinfo,i);break;				//借阅图书 
+			case '3':Return();break;						//归还图书 
+			case '4':PrintBorrow(i);break;					//打印借阅的图书 
+		}
+	}
+}
+void borrow(BOOKINFO bookinfo[100],int i)
+{
+	char BookName[20];
+	int no=0,t=0,sum=0,temp,j;								//sum代表借阅的数量 
+	BOOKINFO borrow;
+	i=getinfo(bookinfo,i);
+	system("cls");
+	printf("\n\n\n\n"); 
+	for(j=1;j<=40;j++) printf(" "); 
+	printf("* 图书馆管理系统用户借阅界面 *\n\n");
+	for(j=0;j<i;j++)
+	{
+		printf("图书名：%-15s 作者：%-10s 图书编号：%-5s 可借阅数量：%d\n",bookinfo[j].BookName,bookinfo[j].Writer,
+		bookinfo[j].BookNumber,bookinfo[j].number);
+	}
+	printf("\n\n"); 
+	for(j=1;j<=40;j++) printf(" "); 
+	printf("请输入想要借阅的图书名：\n");
+	for(j=1;j<=40;j++) printf(" ");
+	scanf("%s",&BookName);
+	i=getinfo(bookinfo,i);
+	while(1)
+	{
+		if((strcmp(BookName,bookinfo[no].BookName))==0)
+		{
+			printf("\n\n");
+			printf("图书信息  图书名：%-15s 作者：%-10s 图书编号：%-5s 可借阅数量：%d\n",bookinfo[no].BookName,bookinfo[no].Writer,
+			bookinfo[no].BookNumber,bookinfo[no].number);
+			printf("\n\n"); 
+			for(j=1;j<=40;j++) printf(" "); 
+			printf("需要借阅多少本书？\n");
+			for(j=1;j<=40;j++) printf(" ");
+			scanf("%d",&sum);
+			if(sum<=bookinfo[no].number)
+			{
+				strcpy(borrow.BookName,bookinfo[no].BookName);
+				strcpy(borrow.Writer,bookinfo[no].Writer);
+				strcpy(borrow.BookNumber,bookinfo[no].BookNumber);
+				borrow.number=sum;
+				bookinfo[no].number-=sum;
+				t=1;
+			}else
+			{
+				printf("\n\n"); 
+				for(j=1;j<=40;j++) printf(" "); 
+				printf("超出图书馆中图书的数量\n");
+			}
+		}
+		if(no==i) break;
+		no++;
+	}
+	if(t==1)
+	{
+		printf("\n\n"); 
+		for(j=1;j<=40;j++) printf(" "); 
+		printf("借阅成功\n");
+		writeinfo(bookinfo,i);
+		UserBorrow(borrow);
+	}else
+	{
+		printf("\n\n"); 
+		for(j=1;j<=40;j++) printf(" "); 
+		printf("图书馆中没有这本书\n");
+	}
+	getch();
+}	
+
+void Return()		
+{
+	char number[20],ch;
+	BOOKINFO re[100],re1[100];
+	BOOKINFO bookinfo[100];
+	int i,temp,no=0,t=0,h,e1,e2,x,temp1,no1=0,t1=0,j;
+	system("cls");
+	printf("\n\n\n\n"); 
+	for(j=1;j<=40;j++) printf(" "); 
+	printf("* 图书馆管理系统用户归还界面 *\n");
+	printf("\n\n"); 
+	for(j=1;j<=40;j++) printf(" ");
+	printf("输入归还的书籍编号:\n");
+	for(j=1;j<=40;j++) printf(" ");
+	scanf("%s",&number);
+	i=BorrowInfo(re,i);
+	x=getinfo(bookinfo,x);
+	temp=i;
+	temp1=x;
+	while(temp)
+	{
+		if(strcmp(re[no].BookNumber,number)==0)
+		{
+			for(j=1;j<=40;j++) printf(" ");
+			printf("书名：%s 作者：%s 编号%s 数量：%d\n",re[no].BookName,re[no].Writer,re[no].BookNumber,re[no].number);
+			t=1;
+			break;
+		}
+		temp--;
+		no++;
+	}
+	while(temp1)
+	{
+		if(strcmp(bookinfo[no1].BookNumber,number)==0)
+		{
+			t1=1;
+			break;
+		}
+		temp1--;
+		no1++;
+	}
+	if(t!=1)
+	{
+		printf("\n\n"); 
+		for(j=1;j<=40;j++) printf(" ");
+		printf("您没有借阅该编号的书籍\n");
+	}else
+	{
+		printf("\n\n"); 
+		for(j=1;j<=40;j++) printf(" ");
+		printf("请输入归还的数量：\n");
+		scanf("%d",&h);
+		if(h>re[no].number)
+		{
+			printf("\n\n"); 
+			for(j=1;j<=40;j++) printf(" ");
+			printf("只可以输入借阅书籍数量以内的数\n");
+		}else if(h==re[no].number){
+			e1=0,e2=0;
+			temp=i;
+			while(temp)
+			{
+				if(temp-1!=no)
+				{
+					strcpy(re1[e1].BookName,re[e2].BookName);
+					strcpy(re1[e1].Writer,re[e2].Writer);
+					strcpy(re1[e1].BookNumber,re[e2].BookNumber);
+					re1[e1].number=re[e2].number;
+					e1++;
+					e2++;
+				}else{
+					e2++;
+				}
+				temp--;
+			}
+			writeBorrow(re1,i-1);
+			printf("\n\n"); 
+			for(j=1;j<=40;j++) printf(" ");
+			printf("归还成功\n");
+		}else if(h<re[no].number && h>=0)
+		{
+			re[no].number-=h;
+			writeBorrow(re,i);
+			printf("\n\n"); 
+			for(j=1;j<=40;j++) printf(" ");
+			printf("归还成功\n");
+		}else
+		{
+			printf("\n\n"); 
+			for(j=1;j<=40;j++) printf(" ");
+			printf("输入的数量不合法\n");
+		}
+		if(t1==1)
+		{
+			bookinfo[no1].number+=h;
+			writeinfo(bookinfo,x);
+		}
+	}
+	getch();
+}
+void UserBorrow(BOOKINFO borrow)				//存放用户借阅书籍的函数
+{
+	FILE * f;
+	BOOKINFO borrowinfo[100];
+	int n,i=0,temp,t=0,no=0;
+	n=BorrowInfo(borrowinfo,n);
+	temp=n;
+	while(temp)
+	{
+		if(strcmp(borrowinfo[no].BookName,borrow.BookName)==0)
+		{
+			t=1;
+			borrowinfo[no].number+=borrow.number;
+			break;
+		}
+		temp--;
+		no++;
+	}
+	if(t==1)
+	{
+		if((f=fopen("UserBorrow.txt","w"))==NULL)
+		{
+			printf("文件不能打开\n");
+			exit(0);
+		}else
+		{
+			temp=n;
+			no=0;
+			while(temp)
+			{
+				fprintf(f,"%s %s %s %d\n",borrowinfo[no].BookName,borrowinfo[no].Writer,borrowinfo[no].BookNumber,borrowinfo[no].number);
+				temp--;
+				no++;
+			}
+		}
+		fclose(f);
+		printf("1\n");
+	}else{
+		if((f=fopen("UserBorrow.txt","a"))==NULL)
+		{
+			printf("文件不能打开\n");
+			exit(0);
+		}else
+		{
+			fprintf(f,"%s %s %s %d\n",borrow.BookName,borrow.Writer,borrow.BookNumber,borrow.number);
+		}
+		fclose(f);
+	}
+}
+int BorrowInfo(BOOKINFO borrow[],int n)				//获取借阅书籍文件信息的函数 
+{
+	FILE * f;
+	n=0;
+	if((f=fopen("UserBorrow.txt","r"))==NULL)
+	{
+		printf("文件不能打开\n");
+		exit(0);
+	}else{
+		while(!feof(f))
+		{
+			fscanf(f,"%s %s %s %d\n",borrow[n].BookName,borrow[n].Writer,borrow[n].BookNumber,&borrow[n].number);
+			n++;
+		}
+	}
+	return n;
+}
+void AdministratorMain()
+{
+	char choice;
+	BOOKINFO bookinfo[10];
+	int i;
+	int tag=1;
+	i=getinfo(bookinfo,i);
+	while(tag)
+	{
+		system("cls");
+		show1();
+		printf("请输入功能序号："); 
+		choice=getch();
+		printf("%c\n",choice);
+		switch(choice)
+		{
+			case '0':tag=0;break; 
+			case '1':i=print(bookinfo,i);break;		//查看全部图书 
+			case '2':create();break;				//书籍的入库
+			case '3':search();break;				//查询记录模块 
+			case '4':modify();break;				//更新记录模块 
+			case '5':Delete();break;				//删除记录模块  
+		}
+	}
+}
+void create()											
+{
+	FILE * f;
+	char BookName[100],Writer[100],BookNumber[100];
+	int number;
+	printf("请输入将要入库的书名：\n");
+	gets(BookName);
+	printf("请输入该书的作者：\n");
+	gets(Writer);
+	printf("请输入书籍的编号：\n");
+	gets(BookNumber);
+	printf("请输入入库的数量:\n");
+	scanf("%d",&number);
+	if((f=fopen("1.txt","a"))==NULL)
+	{
+		printf("不能打开文件\n");
+		exit(0);
+	}else
+	{
+		fprintf(f,"%s %s %s %d\n",BookName,Writer,BookNumber,number);
+	}
+	fclose(f);
+	printf("入库成功\n");
+	getch(); 
+} 
+void search()
+{
+	char BookName[20];
+	BOOKINFO bookinfo[10];
+	int i,no=0,t;
+	printf("请输入书名\n");
+	gets(BookName); 
+	i=getinfo(bookinfo,i);
+	while(i)
+	{
+		if(strcmp(BookName,bookinfo[no].BookName)==0)
+		{
+			t=1;
+			break;
+		}
+		no++;
+		i--;
+	}
+	if(t==1)
+	{
+		printf("书名：%s 作者：%s 编号：%s 数量：%d\n",bookinfo[no].BookName,bookinfo[no].Writer,
+		bookinfo[no].BookNumber,bookinfo[no].number);
+	}else
+	{
+		printf("图书馆中没有这本\n");
+	}
+	getch();
+}
+void modify()
+{
+	char searchBook[20],name[20],writer[20],number[20];
+	BOOKINFO bookinfo[10];
+	int i,no=0,t;
+	printf("请输入想要修改信息的图书名称、作者或编号\n");
+	gets(searchBook);
+	i=getinfo(bookinfo,i);
+	while(i)
+	{
+		if(strcmp(searchBook,bookinfo[no].BookName)==0)
+		{
+			t=1;
+			break;
+		}else if(strcmp(searchBook,bookinfo[no].Writer)==0){
+			t=2;
+			break;
+		} else if(strcmp(searchBook,bookinfo[no].BookNumber)==0)
+		{
+			t=3;
+			break;
+		}
+		no++;
+		i--;
+	}
+	switch(t)
+	{
+		case 1:
+		{
+			printf("请输入修改后的书籍名称：\n");
+			gets(name);
+			strcpy(bookinfo[no].BookName,name);
+			break;	
+		}
+		case 2:
+		{
+			printf("请输入修改后的书籍作者：\n");
+			gets(writer);
+			strcpy(bookinfo[no].Writer,writer);
+			break;
+		}
+		case 3:
+		{
+			printf("请输入修改后的书籍编号：\n");
+			gets(number);
+			strcpy(bookinfo[no].BookNumber,number);
+			break;
+		}
+	}
+	writeinfo(bookinfo,i+no);
+	printf("修改成功\n"); 
+	getch();
+}
+
+void Delete()								
+{
+	BOOKINFO copy[100];
+	BOOKINFO bookinfo[10];
+	int i,no=0,t=0,total,n1=0,n2=0,temp;				//i代表总数、no代表寻找到书本信息的位置、t是执行删除的命令、total是书本总数
+														//n1、n2是执行删除时遍历数组的数 
+	char search[20],choice;
+	printf("请输入想要删除的图书的书名或者编号：\n");
+	gets(search);
+	i=getinfo(bookinfo,i);
+	total=i;
+	temp=total;
+	no=0;
+	while(i)
+	{
+		if(strcmp(search,bookinfo[no].BookName)==0 || strcmp(search,bookinfo[no].BookNumber)==0)
+		{
+			printf("书名：%s 作者：%s 编号：%s 数量：%d\n",bookinfo[no].BookName,bookinfo[no].Writer,
+			bookinfo[no].BookNumber,bookinfo[no].number);
+			t=1;
+			break;
+		}
+		no++;
+		i--;
+	}
+	if(t==1)
+	{
+		i=0;
+		while(temp)
+		{
+			if(i!=no)
+			{
+				copy[n1]=bookinfo[n2];
+				n1++;
+				n2++;
+			}else {
+				n2++;
+			}
+			temp--;
+			i++;
+		}
+		writeinfo(copy,total-1);
+		printf("删除成功\n");
+	}else
+	{
+		printf("图书馆中没有这本书\n");
+	}
+	getch();
+}
+
+void PrintBorrow()
+{
+	BOOKINFO bookinfo[100];
+	int no=0,j,i;
+	i=getborrow(bookinfo,i);								//代表有几本书
+	system("cls");
+	printf("\n\n\n\n");
+	for(j=1;j<=40;j++) printf(" "); 
+	printf("* 全部借阅图书 *\n");
+	printf("\n\n");
+	if(i==0)
+	{
+		printf("\n\n");
+		for(j=1;j<=40;j++) printf(" "); 
+		printf("没有借阅信息");
+	}else{
+		while(i)
+		{
+			printf("图书名：%-15s 作者：%-10s 图书编号：%-5s 数量：%d\n\n",bookinfo[no].BookName,bookinfo[no].Writer,
+			bookinfo[no].BookNumber,bookinfo[no].number);
+			i--; 
+			no++;
+		}
+	}
+	for(j=1;j<=40;j++) printf(" ");
+	printf("\n\n"); 
+	printf("任意键返回\n");
+	getch();
+}
+int getborrow(BOOKINFO bookinfo[100],int no)
+{
+	FILE * f;
+	char ch;
+	no=0;
+	if((f=fopen("UserBorrow.txt","r"))==NULL)		
+	{
+		printf("文件不能打开!\n");
+		exit(0);
+	}
+	ch=fgetc(f);
+	rewind(f);
+	if(ch==EOF)
+	{
+		no=0;
+	}else 
+	{
+		while(!feof(f))
+		{
+			fscanf(f,"%s %s %s %d\n",bookinfo[no].BookName,bookinfo[no].Writer,
+			bookinfo[no].BookNumber,&bookinfo[no].number);
+			no++;
+		}
+	}
+	fclose(f);
+	return no; 									//返回书籍种类数量 
+}
